@@ -43,13 +43,14 @@ public class VideoDispatcher implements WebSocketConfigurer {
     //sudo rabbitmq-server start
     private static final Logger LOGGER = LoggerFactory.getLogger(VideoDispatcher.class);
 
-    @Value("${rabbitmq-server.credentials.username}") private String username;
-    @Value("${rabbitmq-server.credentials.password}") private String password;
-    @Value("${rabbitmq-server.credentials.vhost}") private String vhost;
-    @Value("${rabbitmq-server.server}") private String host;
-    @Value("${rabbitmq-server.port}") private String port;
-    @Value("${conversion.messaging.rabbitmq.conversion-queue}") public  String conversionQueue;
-    @Value("${conversion.messaging.rabbitmq.conversion-exchange}") public  String conversionExchange;
+    //With RMQ
+//    @Value("${rabbitmq-server.credentials.username}") private String username;
+//    @Value("${rabbitmq-server.credentials.password}") private String password;
+//    @Value("${rabbitmq-server.credentials.vhost}") private String vhost;
+//    @Value("${rabbitmq-server.server}") private String host;
+//    @Value("${rabbitmq-server.port}") private String port;
+//    @Value("${conversion.messaging.rabbitmq.conversion-queue}") public  String conversionQueue;
+//    @Value("${conversion.messaging.rabbitmq.conversion-exchange}") public  String conversionExchange;
 
     @Autowired VideoConversion videoConversion;
     public static void main(String[] args) throws Exception {
@@ -59,28 +60,25 @@ public class VideoDispatcher implements WebSocketConfigurer {
     // ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ REST Resources                                                                                                │
     // └───────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    @RequestMapping(method = RequestMethod.POST,
-                    value = "/convert",
-                    consumes = MediaType.APPLICATION_JSON_VALUE,
-                    produces = MediaType.APPLICATION_JSON_VALUE)
-    public ConversionResponse requestConversion(@RequestBody ConversionRequest request) throws JsonProcessingException {
+    @RequestMapping(method = RequestMethod.POST,value = "/convert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ConversionResponse requestConversion(@RequestBody ConversionRequest request) throws Exception {
         LOGGER.info("File = {}", request.getPath());
         final ConversionResponse response = new ConversionResponse();
         LOGGER.info("UUID = {}", response.getUuid().toString());
-        videoConversion.save(request, response);
+        videoConversion.savePubSub(request, response);
         return response;
     }
 
 
-
-    @Bean
-    ConnectionFactory connectionFactory() {
-        final CachingConnectionFactory c = new CachingConnectionFactory(host, Integer.parseInt(port));
-        c.setVirtualHost(vhost);
-        c.setUsername(username);
-        c.setPassword(password);
-        return c;
-    }
+//With RMQ
+//    @Bean
+//    ConnectionFactory connectionFactory() {
+//        final CachingConnectionFactory c = new CachingConnectionFactory(host, Integer.parseInt(port));
+//        c.setVirtualHost(vhost);
+//        c.setUsername(username);
+//        c.setPassword(password);
+//        return c;
+//    }
 
     @Bean
     public WebSocketHandler videoStatusHandler() {
@@ -92,6 +90,7 @@ public class VideoDispatcher implements WebSocketConfigurer {
     }
 
 
+    //With RMQ
 //    @Bean
 //    AmqpAdmin amqpAdmin() {
 //        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory());

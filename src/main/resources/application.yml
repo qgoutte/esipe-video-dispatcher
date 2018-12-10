@@ -30,6 +30,5 @@ rabbitmq-server:
 
 google-cloud:
   pubsub:
-      token:
-      topic: my-topic
+      topic: video-status
       project: esipe-alp-video
