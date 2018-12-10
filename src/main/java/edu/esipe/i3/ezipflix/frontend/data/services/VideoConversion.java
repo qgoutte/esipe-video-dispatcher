@@ -35,6 +35,7 @@ public class VideoConversion {
     @Value("${conversion.messaging.rabbitmq.conversion-queue}") public  String conversionQueue;
     @Value("${conversion.messaging.rabbitmq.conversion-exchange}") public  String conversionExchange;
     @Value("${google-cloud.pubsub.topic}")public String topicId;
+    @Value("${google-cloud.pubsub.project}")public String projectId;
 
     private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
@@ -75,7 +76,7 @@ public class VideoConversion {
         videoConversionRepository.save(conversion);
         String jsonRequest = conversion.toJson();
 
-        ProjectTopicName topicName = ProjectTopicName.of(PROJECT_ID, topicId);
+        ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
         Publisher publisher = null;
         List<ApiFuture<String>> futures = new ArrayList<ApiFuture<String>>();
         try {

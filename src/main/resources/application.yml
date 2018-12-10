@@ -32,3 +32,4 @@ google-cloud:
   pubsub:
       token:
       topic: my-topic
+      project: esipe-alp-video
