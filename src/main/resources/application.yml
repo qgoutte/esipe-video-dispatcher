@@ -1,0 +1,34 @@
+server :
+  port : 42308
+  ssl:
+    enabled: true
+    key-store: "keystore.pkcs12"
+    key-store-password: ezip
+    keyStoreType: PKCS12
+
+spring :
+  data :
+    mongodb :
+      host : localhost
+      port : 27017
+      database : ezipflix
+
+conversion:
+  messaging :
+    rabbitmq :
+      conversion-exchange: video-conversion-exchange
+      conversion-queue: video-conversion-queue
+
+rabbitmq-server:
+  server: localhost
+  port: 5672
+  credentials:
+    vhost: ezip         # sudo rabbitmqctl add_vhost ezip
+                        # sudo rabbitmqctl set_permissions -p ezip ezip ".*" ".*" ".*"
+    username: ezip      # sudo rabbitmqctl add_user ezip pize
+    password: pize
+
+google-cloud:
+  pubsub:
+      token:
+      topic: my-topic
