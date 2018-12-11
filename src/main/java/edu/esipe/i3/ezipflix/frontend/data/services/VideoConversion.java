@@ -1,5 +1,12 @@
 package edu.esipe.i3.ezipflix.frontend.data.services;
 
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
@@ -49,12 +56,12 @@ public class VideoConversion {
     //private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
 
-    public void savePubSub(final ConversionRequest request, final ConversionResponse response) throws Exception {
+    public void save(final ConversionRequest request, final ConversionResponse response) throws Exception {
 
         final VideoConversions conversion = new VideoConversions(response.getUuid().toString(),request.getPath().toString(),"");
 
         //Save Request to database
-        videoConversionRepository.save(conversion);
+        this.saveDynamoDB(conversion);
         //Convert VideoConversions to Json
         String jsonRequest = conversion.toJson();
 
@@ -65,7 +72,7 @@ public class VideoConversion {
             // Create publisher instance
             publisher = Publisher.newBuilder(topicName).build();
 
-            // convert json to bytes
+            // Convert json to bytes
             ByteString data = ByteString.copyFromUtf8(jsonRequest);
             PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
 
@@ -89,8 +96,20 @@ public class VideoConversion {
                 LOGGER.info("Action = ","Shutdown Publisher");
                 publisher.shutdown();
             }
+
         }
 
+    }
+
+    public String saveDynamoDB(VideoConversions video){
+        AmazonDynamoDB client= AmazonDynamoDBClientBuilder.standard().withRegion(Regions.EU_WEST_3).build();
+        DynamoDB dynamoDB = new DynamoDB(client);
+        Table table = dynamoDB.getTable("film");
+        Item item = new Item().withPrimaryKey("uuid",video.getUuid().toString()).withString("origin_path",video.getOriginPath()).withString("target_path",video.getTargetPath());
+
+        PutItemOutcome out = table.putItem(item);
+        LOGGER.info("Action = ","Insert : "+out.toString());
+        return out.toString();
     }
 
 //WITH RMQ

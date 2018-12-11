@@ -65,7 +65,7 @@ public class VideoDispatcher implements WebSocketConfigurer {
         LOGGER.info("File = {}", request.getPath());
         final ConversionResponse response = new ConversionResponse();
         LOGGER.info("UUID = {}", response.getUuid().toString());
-        videoConversion.savePubSub(request, response);
+        videoConversion.save(request, response);
         return response;
     }
 
