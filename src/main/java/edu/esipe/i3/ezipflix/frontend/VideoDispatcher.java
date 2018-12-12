@@ -60,7 +60,7 @@ public class VideoDispatcher implements WebSocketConfigurer {
     // ┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     // │ REST Resources                                                                                                │
     // └───────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-    @RequestMapping(method = RequestMethod.POST,value = "/convert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/convert")
     public ConversionResponse requestConversion(@RequestBody ConversionRequest request) throws Exception {
         LOGGER.info("File = {}", request.getPath());
         final ConversionResponse response = new ConversionResponse();

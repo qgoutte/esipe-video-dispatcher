@@ -48,8 +48,9 @@ public class VideoConversion {
     public String topicId;
     @Value("${google-cloud.pubsub.project}")
     public String projectId;
-    @Autowired
-    VideoConversionRepository videoConversionRepository;
+
+    //@Autowired
+    //VideoConversionRepository videoConversionRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VideoConversion.class);
 
@@ -58,8 +59,7 @@ public class VideoConversion {
 
     public void save(final ConversionRequest request, final ConversionResponse response) throws Exception {
 
-        final VideoConversions conversion = new VideoConversions(response.getUuid().toString(),request.getPath().toString(),"");
-
+        final VideoConversions conversion = new VideoConversions(response.getUuid().toString(),request.getPath().toString(),".");
         //Save Request to database
         this.saveDynamoDB(conversion);
         //Convert VideoConversions to Json
@@ -88,7 +88,6 @@ public class VideoConversion {
 
             for (String messageId : messageIds) {
                 LOGGER.info("MessageId = ",messageId);
-                System.out.println(messageId);
             }
 
             if (publisher != null) {
@@ -105,7 +104,10 @@ public class VideoConversion {
         AmazonDynamoDB client= AmazonDynamoDBClientBuilder.standard().withRegion(Regions.EU_WEST_3).build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable("film");
-        Item item = new Item().withPrimaryKey("uuid",video.getUuid().toString()).withString("origin_path",video.getOriginPath()).withString("target_path",video.getTargetPath());
+        Item item = new Item()
+                .withPrimaryKey("uuid",video.getUuid())
+                .withString("origin_path",video.getOriginPath())
+                .withString("target_path",".");
 
         PutItemOutcome out = table.putItem(item);
         LOGGER.info("Action = ","Insert : "+out.toString());

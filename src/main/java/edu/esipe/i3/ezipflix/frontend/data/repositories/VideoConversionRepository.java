@@ -11,5 +11,4 @@ import java.util.UUID;
  */
 @Repository
 public interface VideoConversionRepository /*extends MongoRepository<VideoConversions, UUID>*/ {
-    String save (VideoConversions video);
 }

@@ -32,7 +32,3 @@ google-cloud:
   pubsub:
       topic: video-status
       project: esipe-alp-video
-
-aws:
-  aws_access_key_id:
-  aws_secret_access_key:
