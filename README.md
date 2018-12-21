@@ -21,7 +21,8 @@ ainsi que le fichier "credentials" dans ~/.aws
 pour la partie google cloud. 
 
 
-
+Petite précision : 
+La requete curl fonctionne uniquement en https
 
 
 
